@@ -19,7 +19,7 @@ LogMonitor是一款简易的日志web在线监控工具，使用servlet3.0异步
 
 Run as... ==> maven build... ==> jetty:run
 
-为方便调试，console.jsp中定时调用/Sniff，使系统产生日志。正式使用场景下，去掉console.jsp中的这段代码，web网页会与控制台同步打印log日志
+为方便调试和观察效果，console.jsp中定时调用了 /Sniff，使系统产生日志。正式使用场景下，去掉console.jsp中的这段代码，web网页会与控制台同步打印log日志
 ```
 <!-- 这是测试：定时请求/sniff，使系统产生日志 -->
 <script>
