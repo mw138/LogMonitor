@@ -21,5 +21,9 @@ Run as... ==> maven build... ==> jetty:run
 <async-supported>true</async-supported>
 ```
 
+#开发计划
+1.优化UI
+2.封装成即插即用包
+
 #联系 
 ![输入图片说明](http://git.oschina.net/uploads/images/2016/0928/120126_12ec637e_490173.png "在这里输入图片标题")
