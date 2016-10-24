@@ -1,0 +1,23 @@
+技术简介：
+    1 Servlet3.0的异步响应技术
+    2 浏览器优先解析html中Script+frame
+    3 java多线程阻塞队列
+    4 log4j扩展appender
+
+技术细节：
+    1 Log4jAppender 扩展自WriterAppender，会将日志信息存储到msgQueue中；
+    2 msgQueue是LinkedBlockQueue的一个实例， 保存日志信息；
+    3 Log4jMonitor 是接收浏览器日志请求的servlet, 利用Servlet3.0技术， 把每个请求对应的AsyContext存储到acQueue中；
+    4 acQueue是ConcurrentLinkedQueue的一个实例， 保存请求对应的acQueue;
+    5 开启一个线程， 从msgQueue中take信息， 遍历acQueue获取监听的请求， 调用response.getWrite().write()方法， 将信息发送至浏览器！
+
+涉及到的多线程问题：
+   1 msgQueue take()方法获取信息的时候， servlet可能会调用put()方法：这个线程安全是由LinkedBlockQueue保证的， 在while(true){msgQueue.take()}模式下所有信息都会被发送到浏览器；
+   2 acQueue遍历的时候会有线程调用add()方法， 遍历过程中也会调用remove()方法： remove对象是否被遍历取决于remove的对象与next()对象直接的位置， 如果正好是next对象则依然会被遍历； add方法的对象是否被遍历取决于next是否有值， 如果有值则会被遍历到，否则不会；总体上是线程安全的；
+  巧妙地地方就在于：使用了两个队列将日志信息的生命周期与访问日志请求的生命周期分割开来， 简化了过程；
+
+
+注意事项： 1 servlet3.0 +tomcat7
+           2 必须是调用js代码才能打印日志；
+           3 必须调用flush方法才能发送日志
+           4 请求完成时要清理队列中的ac;
